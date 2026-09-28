@@ -421,12 +421,68 @@ void Rtt_filter(const string &NmImg)
 
     getNwImg();
 }
+
+void ReSizeFun(const string &NmImg){
+    int X_newDimensions;
+    int Y_newDimensions;
+    double ratioNum;
+    int choosenNum;
+    cout << "Choose 1 or 2:-\n";
+    cout << "Enter 1- New dimensions: \n";
+    cout << "Enter 2- A ratio of reduction or increase: \n";
+    cin >> choosenNum;
+    // Image photoSize("toy1.jpg");
+    Image photoSize(NmImg);
+    if (choosenNum == 1)
+    {
+        cout << "New dimensions\n";
+        cout << "Write 2 Numbers: \n";
+        cin >> X_newDimensions >> Y_newDimensions;
+        while (X_newDimensions <= 0 || Y_newDimensions <= 0)
+        {
+            cout << "Wrong dimensions Try again: ";
+            cin >> X_newDimensions >> Y_newDimensions;
+        }        
+    }
+    if (choosenNum == 2)
+    {
+        cout << "Ratio: ";
+        cin >> ratioNum;
+        while (ratioNum <= 0)
+        {
+            cout << "Wrong Ratio Try again: ";
+            cin >> ratioNum;
+        }        
+        X_newDimensions = photoSize.width * ratioNum;
+        Y_newDimensions = photoSize.height * ratioNum;
+    }
+    Image ReSize(X_newDimensions, Y_newDimensions);
+    double w = photoSize.width;
+    double h = photoSize.height;
+    double x = w / X_newDimensions;
+    double y = h / Y_newDimensions;
+    for (int i = 0; i < X_newDimensions; i++)
+    {
+        for (int j = 0; j < Y_newDimensions; j++)
+        {
+            for (int k = 0; k < photoSize.channels; k++)
+            {
+                ReSize(i, j, k) = photoSize(int(i*x), int(j*y), k);
+            }
+        }
+    }
+    image = ReSize;
+    getNwImg();
+    // ReSize.saveImage("toy002.jpg");
+    // cout << "Image Save Successfully 8 =====";
+}
+
 void Menu()
 {
     cout << "Menu:\n filter(1)::              filter(2):: Black&White_Image\n"
          << " filter(3)::              filter(4):: Frame_Image\n"
          << " filter(5)::              filter(6):: Rotate_Image\n"
-         << " filter(7)::              filter(8):: \n";
+         << " filter(7)::              filter(8):: Resizing_Image\n";
     cout << "Pls enter filter's number: ";
     char fltrNum;
     cin >> fltrNum;
@@ -443,6 +499,10 @@ void Menu()
     case '6':
         setImg();
         Rtt_filter(fileName);
+        break;
+    case '8':
+        setImg();
+        ReSizeFun(fileName);
         break;
     default:
         cout << "Wrong filter number!" << endl;
