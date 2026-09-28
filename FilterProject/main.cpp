@@ -1,148 +1,54 @@
 #include <iostream>
-using namespace std;
-#include "image_class.h"
-
-Image image;
-string fileName;
-
-void setImg()
-{
-    cout << "------------------------------------\nEnter image file name: ";
-    cin >> fileName;
-}
-void getNwImg()
-{
-    cout << "------------------------------------\nPls enter image name to store new image\n";
-    cout << "and specify extension .jpg, .bmp, .png, .tga: ";
-
-    string newFileName;
-    cin >> newFileName;
-
-    cout << ((image.saveImage(newFileName)) ? "\nsuccess save" : "\nfailure save") << endl;
-}
-
-void BlckWht_filter(const string &NmImg)
-{
-    unsigned int _colorRange = 255 / 2;
-    unsigned int _channels = 3;
-    image.loadNewImage(NmImg);
-
-    for (int i = 0; i < image.width; i++)
-    {
-        for (int j = 0; j < image.height; j++)
-        {
-            unsigned int avg = 0;
-            for (int k = 0; k < _channels; k++)
-                avg += image(i, j, k);
-
-            avg /= _channels;
-            for (int k = 0; k < _channels; k++)
-            {
-                if (avg > _colorRange)
-                    image(i, j, k) = 255;
-                else
-                    image(i, j, k) = 0;
+#include "Image_Class.h"
+void Invert(Image& image){
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            for (int k = 0; k < image.channels; k++) {
+                image(i,j,k)=255-image(i,j,k);
             }
         }
     }
-    getNwImg();
+    //-------------delete or cut this part when will you build the menu--------------
+    std::cout << "Pls enter name : " << std::endl;
+    std::string filename;
+    std::cin >> filename;
+    image.saveImage(filename);
 }
-void Rtt_filter(const string &NmImg)
-{
-    image.loadNewImage(NmImg);
-    cout << "Select rotationAngle (90,180,270)::";
-    int angle;
-    cin >> angle;
-    switch (angle)
-    {
-    case 90:
-    {
-        Image _90rotatedImg(image.height, image.width);
-
-        for (int i = 0; i < image.width; i++)
-        {
-            for (int j = 0; j < image.height; j++)
-            {
-                for (int k = 0; k < image.channels; k++)
-                {
-                    _90rotatedImg(image.height - 1 - j, i, k) = image(i, j, k);
+void Darkenandlighten(Image& image){
+    std::cout << "1-Darker\n2-lighter"<<std::endl;
+    int x;
+    std::cin >> x;
+    float percent;
+    std::cout << "enter the percent:" << std::endl;
+    std::cin >> percent;
+    percent = percent / 100.0f;
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            for (int k = 0; k < image.channels; k++) {
+                int cur=image(i,j,k);
+                if (x==1) {
+                    cur=cur-cur*percent;
                 }
-            }
-        }
-
-        image = _90rotatedImg;
-        break;
-    }
-    case 180:
-    {
-        Image _180rotatedImg(image.width, image.height);
-
-        for (int i = 0; i < image.width; i++)
-        {
-            for (int j = 0; j < image.height; j++)
-            {
-                for (int k = 0; k < image.channels; k++)
-                {
-                    _180rotatedImg(image.width - 1 - i, image.height - 1 - j, k) = image(i, j, k);
+                else {
+                    cur=cur+(255-cur)*percent;
                 }
+                if (cur>255) cur=255;
+                if (cur<0) cur=0;
+                image(i,j,k) = cur;
             }
         }
-
-        image = _180rotatedImg;
-        break;
     }
-    case 270:
-    {
-        Image _270rotatedImg(image.height, image.width);
-        for (int i = 0; i < image.width; i++)
-        {
-            for (int j = 0; j < image.height; j++)
-            {
-                for (int k = 0; k < image.channels; k++)
-                {
-                    _270rotatedImg(j, image.width - 1 - i, k) = image(i, j, k);
-                }
-            }
-        }
-
-        image = _270rotatedImg;
-        break;
-    }
-    default:
-        cout << "Wrong angle" << endl;
-        break;
-    }
-
-    getNwImg();
+    //------------------delete or cut this part when will you build the menu-------------------
+    std::cout << "Pls enter name : " << std::endl;
+    std::string filename;
+    std::cin >> filename;
+    image.saveImage(filename);
 }
-void Menu()
-{
-    cout << "Menu:\n filter(1)::              filter(2):: Black&White_Image\n"
-         << " filter(3)::              filter(4):: \n"
-         << " filter(5)::              filter(6):: Rotate_Image\n"
-         << " filter(7)::              filter(8):: \n";
-    cout << "Pls enter filter's number: ";
-    char fltrNum;
-    cin >> fltrNum;
-    switch (fltrNum)
-    {
-    case '2':
-        setImg();
-        BlckWht_filter(fileName);
-        break;
-    case '6':
-        setImg();
-        Rtt_filter(fileName);
-        break;
-    default:
-        cout << "Wrong filter number!" << endl;
-        break;
-    }
-}
-
-int main()
-{
-    cout << "  =Wellcome in ImageProcessing APP=\n======================================\n";
-    Menu();
+int main() {
+    std::string filename;
+    std::cout << "Pls enter colored image name to turn to gray scale: ";
+    std::cin >> filename;
+    Image image(filename);
+    Darkenandlighten(image);
     return 0;
 }
