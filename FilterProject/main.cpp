@@ -4,6 +4,7 @@ using namespace std;
 
 Image image;
 string fileName;
+bool isRunning = true;
 
 void setImg()
 {
@@ -12,13 +13,39 @@ void setImg()
 }
 void getNwImg()
 {
-    cout << "------------------------------------\nPls enter image name to store new image\n";
-    cout << "and specify extension .jpg, .bmp, .png, .tga: ";
+    if (isRunning)
+    {
+        cout << "------------------------------------\nPls enter image name to store new image\n";
+        cout << "and specify extension .jpg, .bmp, .png, .tga: ";
 
-    string newFileName;
-    cin >> newFileName;
+        string newFileName;
+        cin >> newFileName;
 
-    cout << ((image.saveImage(newFileName)) ? "\nsuccess save" : "\nfailure save") << endl;
+        cout << ((image.saveImage(newFileName)) ? "\nsuccess save" : "\nfailure save") << endl;
+    }
+}
+
+void grayscale(const string &NmImg)
+{
+    image.loadNewImage(NmImg);
+    for (int i = 0; i < image.width; i++)
+    {
+        for (int j = 0; j < image.height; j++)
+        {
+            unsigned int avg = 0;
+
+            for (int k = 0; k < image.channels; k++)
+            {
+                avg += image(i, j, k);
+            }
+            avg /= 3;
+            for (int k = 0; k < image.channels; k++)
+            {
+                image(i, j, k) = avg;
+            }
+        }
+    }
+    getNwImg();
 }
 
 void BlckWht_filter(const string &NmImg)
@@ -48,295 +75,300 @@ void BlckWht_filter(const string &NmImg)
     getNwImg();
 }
 
-void frame(const string &NmImg){
-    int chooseNum;
-    int chooseNum001;
-    int chooseNum002;
+void frame(const string &NmImg)
+{
+    char chooseNum;
+    char chooseNum001;
+    char chooseNum002;
     double thickness;
     Image Photo(NmImg);
-    // Image Photo("luffy.jpg");
-    cout << "Choose 1 or 2:-\n";
-    cout << "1- simple frame: \n";
-    cout << "2- Decorated frame: \n";
+    cout << "------------------------------------\nFram_Menu:-\n 1- simple frame \n";
+    cout << " 2- Decorated frame \n";
+    cout << "Choose 1 or 2: ";
     cin >> chooseNum;
-    if (chooseNum == 1)
+    if (chooseNum == '#')
     {
-        cout << "Choose 1, 2, 3, 4 or 5:-\n";
-        cout << "1- Red simple frame: \n";
-        cout << "2- Green simple frame: \n";
-        cout << "3- Blue simple frame: \n";
-        cout << "4- White simple frame: \n";
-        cout << "5- Black simple frame: \n";
+        isRunning = false;
+        cout << "Exiting the program..." << endl;
+        return;
+    }
+
+    if (chooseNum == '1')
+    {
+        cout << "------------------------------------\nSimpleF_Menu:-\n 1- Red simple frame \n";
+        cout << " 2- Green simple frame \n";
+        cout << " 3- Blue simple frame \n";
+        cout << " 4- White simple frame \n";
+        cout << " 5- Black simple frame \n";
+        cout << "press option number:";
         cin >> chooseNum001;
-        cout << "Enter the Thickness: ";
-        cin >> thickness;
+        if (chooseNum001 != '#')
+        {
+            cout << "Enter the Thickness: ";
+            cin >> thickness;
+        }
     }
-    if (chooseNum == 2)
+    if (chooseNum == '2')
     {
-        cout << "Choose 1, 2, 3, 4, 5, 6, 7 or 8:-\n";
-        cout << "1- Red & White Decorated frame: \n";
-        cout << "2- Red & Black Decorated frame: \n";
-        cout << "3- Green & White Decorated frame: \n";
-        cout << "4- Green & Black Decorated frame: \n";
-        cout << "5- Blue & White Decorated frame: \n";
-        cout << "6- Blue & Black Decorated frame: \n";
-        cout << "7- Black & White Decorated frame: \n";
-        cout << "8- White & Black Decorated frame: \n";
+        cout << "------------------------------------\nDecoratedF_Menu:-\n";
+        cout << " 1- Red & White Decorated frame             2- Red & Black Decorated frame \n";
+        cout << " 3- Green & White Decorated frame         4- Green & Black Decorated frame \n";
+        cout << " 5- Blue & White Decorated frame        6- Blue & Black Decorated frame \n";
+        cout << " 7- Black & White Decorated frame      8- White & Black Decorated frame \n";
+        cout << "press option number: ";
         cin >> chooseNum002;
-        cout << "Enter the Thickness: ";
-        cin >> thickness;
+        if (chooseNum002 != '#')
+        {
+            cout << "Enter the Thickness: ";
+            cin >> thickness;
+        }
     }
-    
+
     for (int i = 0; i < Photo.width; i++)
     {
         for (int j = 0; j < Photo.height; j++)
         {
-            if (chooseNum == 1)
+            if (chooseNum == '1')
             {
-                if (chooseNum001 == 1)
+                if (chooseNum001 == '1')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
                 }
-                if (chooseNum001 == 2)
+                if (chooseNum001 == '2')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 0;
                     }
                 }
-                if (chooseNum001 == 3)
+                if (chooseNum001 == '3')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 255;
                     }
                 }
-                if (chooseNum001 == 4)
+                if (chooseNum001 == '4')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 255;
                     }
                 }
-                if (chooseNum001 == 5)
+                if (chooseNum001 == '5')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
-                        {
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
+                    {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
                 }
             }
-            if (chooseNum == 2)
+            if (chooseNum == '2')
             {
-                if (chooseNum002 == 1)
+                if (chooseNum002 == '1')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
-                    if (i > Photo.width-(thickness/1.5) || i < (thickness/1.5) || 
-                    j > Photo.height-(thickness/1.5) || j < (thickness/1.5))
+                    if (i > Photo.width - (thickness / 1.5) || i < (thickness / 1.5) ||
+                        j > Photo.height - (thickness / 1.5) || j < (thickness / 1.5))
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 255;
                     }
-                    if (i > Photo.width-(thickness/3) || i < (thickness/3) || 
-                        j > Photo.height-(thickness/3) || j < (thickness/3))
+                    if (i > Photo.width - (thickness / 3) || i < (thickness / 3) ||
+                        j > Photo.height - (thickness / 3) || j < (thickness / 3))
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
-                
                 }
-                if (chooseNum002 == 2)
+                if (chooseNum002 == '2')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
-                    if (i > Photo.width-(thickness/1.5) || i < (thickness/1.5) || 
-                        j > Photo.height-(thickness/1.5) || j < (thickness/1.5))
+                    if (i > Photo.width - (thickness / 1.5) || i < (thickness / 1.5) ||
+                        j > Photo.height - (thickness / 1.5) || j < (thickness / 1.5))
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
-                    if (i > Photo.width-(thickness/3) || i < (thickness/3) || 
-                        j > Photo.height-(thickness/3) || j < (thickness/3))
+                    if (i > Photo.width - (thickness / 3) || i < (thickness / 3) ||
+                        j > Photo.height - (thickness / 3) || j < (thickness / 3))
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
-                
                 }
-                if (chooseNum002 == 3)
+                if (chooseNum002 == '3')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 0;
                     }
-                    if (i > Photo.width-(thickness/1.5) || i < (thickness/1.5) || 
-                        j > Photo.height-(thickness/1.5) || j < (thickness/1.5))
+                    if (i > Photo.width - (thickness / 1.5) || i < (thickness / 1.5) ||
+                        j > Photo.height - (thickness / 1.5) || j < (thickness / 1.5))
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 255;
                     }
-                    if (i > Photo.width-(thickness/3) || i < (thickness/3) || 
-                        j > Photo.height-(thickness/3) || j < (thickness/3))
+                    if (i > Photo.width - (thickness / 3) || i < (thickness / 3) ||
+                        j > Photo.height - (thickness / 3) || j < (thickness / 3))
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 0;
                     }
-                
                 }
-                if (chooseNum002 == 4)
+                if (chooseNum002 == '4')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 0;
                     }
-                    if (i > Photo.width-(thickness/1.5) || i < (thickness/1.5) || 
-                        j > Photo.height-(thickness/1.5) || j < (thickness/1.5))
+                    if (i > Photo.width - (thickness / 1.5) || i < (thickness / 1.5) ||
+                        j > Photo.height - (thickness / 1.5) || j < (thickness / 1.5))
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
-                    if (i > Photo.width-(thickness/3) || i < (thickness/3) || 
-                        j > Photo.height-(thickness/3) || j < (thickness/3))
+                    if (i > Photo.width - (thickness / 3) || i < (thickness / 3) ||
+                        j > Photo.height - (thickness / 3) || j < (thickness / 3))
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 0;
                     }
-                
                 }
-                if (chooseNum002 == 5)
+                if (chooseNum002 == '5')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 255;
                     }
-                    if (i > Photo.width-(thickness/1.5) || i < (thickness/1.5) || 
-                        j > Photo.height-(thickness/1.5) || j < (thickness/1.5))
+                    if (i > Photo.width - (thickness / 1.5) || i < (thickness / 1.5) ||
+                        j > Photo.height - (thickness / 1.5) || j < (thickness / 1.5))
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 255;
                     }
-                    if (i > Photo.width-(thickness/3) || i < (thickness/3) || 
-                        j > Photo.height-(thickness/3) || j < (thickness/3))
-                    {
-                        Photo(i, j, 0) = 0;
-                        Photo(i, j, 1) = 0;
-                        Photo(i, j, 2) = 255;
-                    }
-                
-                }
-                if (chooseNum002 == 6)
-                {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
-                    {
-                        Photo(i, j, 0) = 0;
-                        Photo(i, j, 1) = 0;
-                        Photo(i, j, 2) = 255;
-                    }
-                    if (i > Photo.width-(thickness/1.5) || i < (thickness/1.5) || 
-                        j > Photo.height-(thickness/1.5) || j < (thickness/1.5))
-                    {
-                        Photo(i, j, 0) = 0;
-                        Photo(i, j, 1) = 0;
-                        Photo(i, j, 2) = 0;
-                    }
-                    if (i > Photo.width-(thickness/3) || i < (thickness/3) || 
-                        j > Photo.height-(thickness/3) || j < (thickness/3))
+                    if (i > Photo.width - (thickness / 3) || i < (thickness / 3) ||
+                        j > Photo.height - (thickness / 3) || j < (thickness / 3))
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 255;
                     }
                 }
-                if (chooseNum002 == 7)
+                if (chooseNum002 == '6')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
+                    {
+                        Photo(i, j, 0) = 0;
+                        Photo(i, j, 1) = 0;
+                        Photo(i, j, 2) = 255;
+                    }
+                    if (i > Photo.width - (thickness / 1.5) || i < (thickness / 1.5) ||
+                        j > Photo.height - (thickness / 1.5) || j < (thickness / 1.5))
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
-                    if (i > Photo.width-(thickness/1.5) || i < (thickness/1.5) || 
-                        j > Photo.height-(thickness/1.5) || j < (thickness/1.5))
+                    if (i > Photo.width - (thickness / 3) || i < (thickness / 3) ||
+                        j > Photo.height - (thickness / 3) || j < (thickness / 3))
+                    {
+                        Photo(i, j, 0) = 0;
+                        Photo(i, j, 1) = 0;
+                        Photo(i, j, 2) = 255;
+                    }
+                }
+                if (chooseNum002 == '7')
+                {
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
+                    {
+                        Photo(i, j, 0) = 0;
+                        Photo(i, j, 1) = 0;
+                        Photo(i, j, 2) = 0;
+                    }
+                    if (i > Photo.width - (thickness / 1.5) || i < (thickness / 1.5) ||
+                        j > Photo.height - (thickness / 1.5) || j < (thickness / 1.5))
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 255;
                     }
-                    if (i > Photo.width-(thickness/3) || i < (thickness/3) || 
-                        j > Photo.height-(thickness/3) || j < (thickness/3))
+                    if (i > Photo.width - (thickness / 3) || i < (thickness / 3) ||
+                        j > Photo.height - (thickness / 3) || j < (thickness / 3))
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
                 }
-                if (chooseNum002 == 8)
+                if (chooseNum002 == '8')
                 {
-                    if (i > Photo.width-thickness || i < thickness || 
-                        j > Photo.height-thickness || j < thickness)
+                    if (i > Photo.width - thickness || i < thickness ||
+                        j > Photo.height - thickness || j < thickness)
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 255;
                         Photo(i, j, 2) = 255;
                     }
-                    if (i > Photo.width-(thickness/1.5) || i < (thickness/1.5) || 
-                        j > Photo.height-(thickness/1.5) || j < (thickness/1.5))
+                    if (i > Photo.width - (thickness / 1.5) || i < (thickness / 1.5) ||
+                        j > Photo.height - (thickness / 1.5) || j < (thickness / 1.5))
                     {
                         Photo(i, j, 0) = 0;
                         Photo(i, j, 1) = 0;
                         Photo(i, j, 2) = 0;
                     }
-                    if (i > Photo.width-(thickness/3) || i < (thickness/3) || 
-                        j > Photo.height-(thickness/3) || j < (thickness/3))
+                    if (i > Photo.width - (thickness / 3) || i < (thickness / 3) ||
+                        j > Photo.height - (thickness / 3) || j < (thickness / 3))
                     {
                         Photo(i, j, 0) = 255;
                         Photo(i, j, 1) = 255;
@@ -346,21 +378,84 @@ void frame(const string &NmImg){
             }
         }
     }
+    if (chooseNum001 == '#' || chooseNum002 == '#')
+    {
+        isRunning = false;
+        cout << "Exiting the program..." << endl;
+    }
+
     image = Photo;
     getNwImg();
-    // Photo.saveImage("Luffy001.jpg");
-    // cout << "Image Save Successfully\n";
-    // cout << "Good DMMAH";
+}
+
+void flip(const string &NmImg)
+{
+    image.loadNewImage(NmImg);
+    Image image2(image.width, image.height);
+    cout << "------------------------------------\nFlip_Menu:-\n 1- Horizontal flip \n"
+         << " 2- Vertical flip \n"
+         << "Choose 1 or 2:";
+    char chooseNum;
+    cin >> chooseNum;
+    switch (chooseNum)
+    {
+    case '#':
+        isRunning = false;
+        cout << "Exiting the program..." << endl;
+        break;
+    case '1':
+        for (int i = 0; i < image.width; i++)
+        {
+            for (int j = 0; j < image.height; j++)
+            {
+                for (int k = 0; k < image.channels; k++)
+                {
+                    image2(i, image.height - 1 - j, k) = image(i, j, k);
+                }
+            }
+        }
+        break;
+    case '2':
+        for (int i = 0; i < image.width; i++)
+        {
+            for (int j = 0; j < image.height; j++)
+            {
+                for (int k = 0; k < image.channels; k++)
+                {
+                    image2(image.width - 1 - i, j, k) = image(i, j, k);
+                }
+            }
+        }
+        break;
+    }
+    image = image2;
+    getNwImg();
 }
 
 void Rtt_filter(const string &NmImg)
 {
     image.loadNewImage(NmImg);
-    cout << "Select rotationAngle (90,180,270)::";
-    int angle;
+    cout << "Select rotationAngle (90,180,270) or press 0 to exit:";
+    short int angle;
     cin >> angle;
+
+    while (angle != 90 && angle != 180 && angle != 270 && angle != 0)
+    {
+        cout << "Wrong rotationAngle try again: ";
+        cin >> angle;
+        if (angle == 0)
+        {
+            isRunning = false;
+            cout << "Exiting the program..." << endl;
+            break;
+        }
+    }
     switch (angle)
     {
+    case 0:
+        isRunning = false;
+        cout << "Exiting the program..." << endl;
+        break;
     case 90:
     {
         Image _90rotatedImg(image.height, image.width);
@@ -414,37 +509,47 @@ void Rtt_filter(const string &NmImg)
         image = _270rotatedImg;
         break;
     }
-    default:
-        cout << "Wrong angle" << endl;
-        break;
     }
 
     getNwImg();
 }
 
-void ReSizeFun(const string &NmImg){
+void ReSizeFun(const string &NmImg)
+{
     int X_newDimensions;
     int Y_newDimensions;
     double ratioNum;
-    int choosenNum;
-    cout << "Choose 1 or 2:-\n";
-    cout << "Enter 1- New dimensions: \n";
-    cout << "Enter 2- A ratio of reduction or increase: \n";
+    char choosenNum;
+    cout << "------------------------------------\nResize_Menu\n 1- New dimensions \n"
+         << " 2- A ratio of reduction or increase \n"
+         << "Choose 1 or 2:";
     cin >> choosenNum;
-    // Image photoSize("toy1.jpg");
     Image photoSize(NmImg);
-    if (choosenNum == 1)
+    switch (choosenNum)
     {
-        cout << "New dimensions\n";
-        cout << "Write 2 Numbers: \n";
+    case '#':
+        isRunning = false;
+        cout << "Exiting the program..." << endl;
+        break;
+    case '1':
+    {
+        cout << "Enter new dimensions (x,y): ";
         cin >> X_newDimensions >> Y_newDimensions;
         while (X_newDimensions <= 0 || Y_newDimensions <= 0)
         {
             cout << "Wrong dimensions Try again: ";
-            cin >> X_newDimensions >> Y_newDimensions;
-        }        
+            cin >> X_newDimensions;
+            if (X_newDimensions == '#' || Y_newDimensions == '#')
+            {
+                isRunning = false;
+                cout << "Exiting the program..." << endl;
+                break;
+            }
+            cin >> Y_newDimensions;
+        }
+        break;
     }
-    if (choosenNum == 2)
+    case '2':
     {
         cout << "Ratio: ";
         cin >> ratioNum;
@@ -452,42 +557,65 @@ void ReSizeFun(const string &NmImg){
         {
             cout << "Wrong Ratio Try again: ";
             cin >> ratioNum;
-        }        
-        X_newDimensions = photoSize.width * ratioNum;
-        Y_newDimensions = photoSize.height * ratioNum;
-    }
-    Image ReSize(X_newDimensions, Y_newDimensions);
-    double w = photoSize.width;
-    double h = photoSize.height;
-    double x = w / X_newDimensions;
-    double y = h / Y_newDimensions;
-    for (int i = 0; i < X_newDimensions; i++)
-    {
-        for (int j = 0; j < Y_newDimensions; j++)
-        {
-            for (int k = 0; k < photoSize.channels; k++)
+            if (ratioNum == '#')
             {
-                ReSize(i, j, k) = photoSize(int(i*x), int(j*y), k);
+                isRunning = false;
+                cout << "Exiting the program..." << endl;
+                break;
             }
         }
+        X_newDimensions = photoSize.width * ratioNum;
+        Y_newDimensions = photoSize.height * ratioNum;
+        break;
     }
-    image = ReSize;
-    getNwImg();
-    // ReSize.saveImage("toy002.jpg");
-    // cout << "Image Save Successfully 8 =====";
+        if (isRunning)
+        {
+            Image ReSize(X_newDimensions, Y_newDimensions);
+            double w = photoSize.width;
+            double h = photoSize.height;
+            double x = w / X_newDimensions;
+            double y = h / Y_newDimensions;
+            for (int i = 0; i < X_newDimensions; i++)
+            {
+                for (int j = 0; j < Y_newDimensions; j++)
+                {
+                    for (int k = 0; k < photoSize.channels; k++)
+                    {
+                        ReSize(i, j, k) = photoSize(int(i * x), int(j * y), k);
+                    }
+                }
+            }
+            image = ReSize;
+        }
+        getNwImg();
+    }
 }
 
 void Menu()
 {
-    cout << "Menu:\n filter(1)::              filter(2):: Black&White_Image\n"
+    cout << "Menu:-\n filter(1):: grayscale_Image             filter(2):: Black&White_Image\n"
          << " filter(3)::              filter(4):: Frame_Image\n"
-         << " filter(5)::              filter(6):: Rotate_Image\n"
-         << " filter(7)::              filter(8):: Resizing_Image\n";
-    cout << "Pls enter filter's number: ";
+         << " filter(5):: Flip_Image                  filter(6):: Rotate_Image\n"
+         << " filter(7)::                  filter(8):: Resizing_Image\n"
+         << "=> press '#' to exit the program at any point <=\n";
+    cout << "Pls enter the filter number: ";
     char fltrNum;
     cin >> fltrNum;
+    while ((fltrNum < '1' || fltrNum > '8') && fltrNum != '#')
+    {
+        cout << "Wrong filter number try again: ";
+        cin >> fltrNum;
+    }
+
     switch (fltrNum)
     {
+    case '#':
+        isRunning = false;
+        break;
+    case '1':
+        setImg();
+        grayscale(fileName);
+        break;
     case '2':
         setImg();
         BlckWht_filter(fileName);
@@ -495,6 +623,10 @@ void Menu()
     case '4':
         setImg();
         frame(fileName);
+        break;
+    case '5':
+        setImg();
+        flip(fileName);
         break;
     case '6':
         setImg();
@@ -504,15 +636,33 @@ void Menu()
         setImg();
         ReSizeFun(fileName);
         break;
-    default:
-        cout << "Wrong filter number!" << endl;
-        break;
     }
 }
 
 int main()
 {
     cout << "  =Wellcome in ImageProcessing APP=\n======================================\n";
-    Menu();
+    do
+    {
+        Menu();
+        if (!isRunning)
+        {
+            cout << "Exiting the program..." << endl;
+            break;
+        }
+        else
+        {
+            cout << "------------------------------------\n";
+            cout << "Do you want to apply another filter? (y/n): ";
+            char choice;
+            cin >> choice;
+            if (choice == 'n' || choice == 'N')
+            {
+                isRunning = false;
+                cout << "Exiting the program..." << endl;
+                break;
+            }
+        }
+    } while (isRunning);
     return 0;
 }
