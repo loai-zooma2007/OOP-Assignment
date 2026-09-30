@@ -17,6 +17,7 @@ ________________________________________________________________________________
 */
 
 #include <iostream>
+#include <algorithm>
 using namespace std;
 #include "image_class.h"
 
@@ -46,21 +47,14 @@ void getNwImg()
 void grayscale(const string &NmImg)
 {
     image.loadNewImage(NmImg);
-    for (int i = 0; i < image.width; i++)
+    for (int y = 0; y < image.height; y++)
     {
-        for (int j = 0; j < image.height; j++)
+        for (int x = 0; x < image.width; x++)
         {
-            unsigned int avg = 0;
-
-            for (int k = 0; k < image.channels; k++)
-            {
-                avg += image(i, j, k);
-            }
-            avg /= 3;
-            for (int k = 0; k < image.channels; k++)
-            {
-                image(i, j, k) = avg;
-            }
+            unsigned int avg = (image(x, y, 0) + image(x, y, 1) + image(x, y, 2)) / 3;
+            image(x, y, 0) = avg;
+            image(x, y, 1) = avg;
+            image(x, y, 2) = avg;
         }
     }
     getNwImg();
@@ -145,9 +139,9 @@ void frame(const string &NmImg)
     if (chooseNum == '2')
     {
         cout << "------------------------------------\nDecoratedF_Menu:-\n";
-        cout << " 1- Red & White Decorated frame             2- Red & Black Decorated frame \n";
-        cout << " 3- Green & White Decorated frame         4- Green & Black Decorated frame \n";
-        cout << " 5- Blue & White Decorated frame        6- Blue & Black Decorated frame \n";
+        cout << " 1- Red & White Decorated frame        2- Red & Black Decorated frame \n";
+        cout << " 3- Green & White Decorated frame      4- Green & Black Decorated frame \n";
+        cout << " 5- Blue & White Decorated frame       6- Blue & Black Decorated frame \n";
         cout << " 7- Black & White Decorated frame      8- White & Black Decorated frame \n";
         cout << "press option number: ";
         cin >> chooseNum002;
@@ -425,7 +419,6 @@ void frame(const string &NmImg)
 void flip(const string &NmImg)
 {
     image.loadNewImage(NmImg);
-    Image image2(image.width, image.height);
     cout << "------------------------------------\nFlip_Menu:-\n 1- Horizontal flip \n"
          << " 2- Vertical flip \n"
          << "Choose 1 or 2:";
@@ -438,31 +431,31 @@ void flip(const string &NmImg)
         cout << "Exiting the program..." << endl;
         break;
     case '1':
-        for (int i = 0; i < image.width; i++)
+        for (int x = 0; x < image.width / 2; x++)
         {
-            for (int j = 0; j < image.height; j++)
+            for (int y = 0; y < image.height; y++)
             {
-                for (int k = 0; k < image.channels; k++)
+                for (int c = 0; c < 3; c++)
                 {
-                    image2(i, image.height - 1 - j, k) = image(i, j, k);
+                    swap(image(x, y, c), image(image.width - 1 - x, y, c));
                 }
             }
         }
         break;
     case '2':
-        for (int i = 0; i < image.width; i++)
+        for (int x = 0; x < image.width; x++)
         {
-            for (int j = 0; j < image.height; j++)
+            for (int y = 0; y < image.height / 2; y++)
             {
-                for (int k = 0; k < image.channels; k++)
+                for (int c = 0; c < 3; c++)
                 {
-                    image2(image.width - 1 - i, j, k) = image(i, j, k);
+                    swap(image(x, y, c), image(x, image.height - 1 - y, c));
                 }
             }
         }
         break;
     }
-    image = image2;
+
     getNwImg();
 }
 
@@ -602,31 +595,23 @@ void ReSizeFun(const string &NmImg)
          << "Choose 1 or 2:";
     cin >> choosenNum;
     Image photoSize(NmImg);
-    switch (choosenNum)
+    if (choosenNum == '#')
     {
-    case '#':
         isRunning = false;
         cout << "Exiting the program..." << endl;
-        break;
-    case '1':
+        return;
+    }
+    if (choosenNum == '1')
     {
-        cout << "Enter new dimensions (x,y): ";
+        cout << "------------------------------------\npress 2 dimensions (x,y):";
         cin >> X_newDimensions >> Y_newDimensions;
         while (X_newDimensions <= 0 || Y_newDimensions <= 0)
         {
             cout << "Wrong dimensions Try again: ";
-            cin >> X_newDimensions;
-            if (X_newDimensions == '#' || Y_newDimensions == '#')
-            {
-                isRunning = false;
-                cout << "Exiting the program..." << endl;
-                break;
-            }
-            cin >> Y_newDimensions;
+            cin >> X_newDimensions >> Y_newDimensions;
         }
-        break;
     }
-    case '2':
+    if (choosenNum == '2')
     {
         cout << "Ratio: ";
         cin >> ratioNum;
@@ -634,38 +619,27 @@ void ReSizeFun(const string &NmImg)
         {
             cout << "Wrong Ratio Try again: ";
             cin >> ratioNum;
-            if (ratioNum == '#')
-            {
-                isRunning = false;
-                cout << "Exiting the program..." << endl;
-                break;
-            }
         }
         X_newDimensions = photoSize.width * ratioNum;
         Y_newDimensions = photoSize.height * ratioNum;
-        break;
     }
-        if (isRunning)
+    Image ReSize(X_newDimensions, Y_newDimensions);
+    double w = photoSize.width;
+    double h = photoSize.height;
+    double x = w / X_newDimensions;
+    double y = h / Y_newDimensions;
+    for (int i = 0; i < X_newDimensions; i++)
+    {
+        for (int j = 0; j < Y_newDimensions; j++)
         {
-            Image ReSize(X_newDimensions, Y_newDimensions);
-            double w = photoSize.width;
-            double h = photoSize.height;
-            double x = w / X_newDimensions;
-            double y = h / Y_newDimensions;
-            for (int i = 0; i < X_newDimensions; i++)
+            for (int k = 0; k < photoSize.channels; k++)
             {
-                for (int j = 0; j < Y_newDimensions; j++)
-                {
-                    for (int k = 0; k < photoSize.channels; k++)
-                    {
-                        ReSize(i, j, k) = photoSize(int(i * x), int(j * y), k);
-                    }
-                }
+                ReSize(i, j, k) = photoSize(int(i * x), int(j * y), k);
             }
-            image = ReSize;
         }
-        getNwImg();
     }
+    image = ReSize;
+    getNwImg();
 }
 
 void Menu()
