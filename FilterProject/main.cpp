@@ -477,32 +477,99 @@ void ReSizeFun(const string &NmImg){
     // cout << "Image Save Successfully 8 =====";
 }
 
+void Blur_Image(const string &NmImg){
+    // Image photo("luffy.jpg");
+    Image photo(NmImg);
+    Image BluredImage(photo.width, photo.height);
+    for (int i = 0; i < photo.width; i++)
+    {
+        for (int j = 0; j < photo.height; j++)
+        {
+            for (int k = 0; k < photo.channels; k++)
+            {
+                int avr = 0;
+                int repeat = 0;
+                for (int l = -9; l <= 9; l++)
+                {
+                    for (int m = -9; m <= 9; m++)
+                    {
+                        int x = i + l;
+                        int y = j + m;
+                        if (x >= 0 && y >= 0 && x < photo.width && y < photo.height)
+                        {
+                            avr += photo(x, y, k);
+                            repeat++;
+                        }
+                    }
+                }
+                BluredImage(i, j, k) = avr / repeat;
+            }
+        }
+    }
+    image = BluredImage;
+    getNwImg();
+    // BluredImage.saveImage("luffy012.jpg");
+    // cout << "Good Man";
+}
+
+void Infrared(const string &NmImg){
+    // Image photo("samurai.jpg");
+    Image photo(NmImg);
+    Image IR(photo.width, photo.height);
+    for (int i = 0; i < photo.width; i++)
+    {
+        for (int j = 0; j < photo.height; j++)
+        {
+            IR(i, j, 0) = 255;
+            IR(i, j, 1) = 255-photo(i, j, 0);
+            IR(i, j, 2) = 255-photo(i, j, 0);
+        }
+    }
+    // IR = photo;
+    // IR.saveImage("samurai001.jpg");
+    // cout << "Good Man";
+    image = IR;
+    getNwImg();
+}
+
 void Menu()
 {
     cout << "Menu:\n filter(1)::              filter(2):: Black&White_Image\n"
          << " filter(3)::              filter(4):: Frame_Image\n"
          << " filter(5)::              filter(6):: Rotate_Image\n"
-         << " filter(7)::              filter(8):: Resizing_Image\n";
+         << " filter(7)::              filter(8):: Resizing_Image\n"
+         << " filter(9)::              filter(10):: \n"
+         << " filter(11)::             filter(12):: Blur_Image\n"
+         << " filter(13)::             filter(14):: \n"
+         << " filter(15)::             filter(16):: Infrared_Image\n";
     cout << "Pls enter filter's number: ";
-    char fltrNum;
+    int fltrNum;
     cin >> fltrNum;
     switch (fltrNum)
     {
-    case '2':
+    case 2:
         setImg();
         BlckWht_filter(fileName);
         break;
-    case '4':
+    case 4:
         setImg();
         frame(fileName);
         break;
-    case '6':
+    case 6:
         setImg();
         Rtt_filter(fileName);
         break;
-    case '8':
+    case 8:
         setImg();
         ReSizeFun(fileName);
+        break;
+    case 12:
+        setImg();
+        Blur_Image(fileName);
+        break;
+    case 16:
+        setImg();
+        Infrared(fileName);
         break;
     default:
         cout << "Wrong filter number!" << endl;
