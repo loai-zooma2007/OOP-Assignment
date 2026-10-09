@@ -321,7 +321,24 @@ void DetectEdges(Image &image)
 }
 
 //filter(11):
-void Crop(Image &image){}
+void Crop(Image &image,int NewWidth,int NewHeight,int x,int y)
+{
+    Image newimage(NewWidth,NewHeight);
+
+    for (int i = 0; i < NewWidth; i++)
+    {
+        for (int j = 0; j < NewHeight; j++)
+        {
+            for (int k = 0; k < image.channels; k++)
+            {
+                newimage(i,j,k) = image(i+x,j+y,k);
+
+            }
+        }
+    }
+
+    image=newimage;
+}
 
 //filter(12):
 void Blur(Image &image)
@@ -377,7 +394,25 @@ void DenDenMushi(Image &image)
 }
 
 //filter(15):
-void PurpleNight(Image &image){}
+void PurpleNight(Image &image)
+{
+    int x[3]={50,-40,60};
+    for (int i = 0; i < image.width; i++)
+    {
+        for (int j = 0; j < image.height; j++)
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                int res=image(i,j,k)+x[k];
+                if(res>255)
+                    res=255;
+                if(res<0)
+                    res=0;
+                image(i,j,k) = res;
+            }
+        }
+    }
+}
 
 //filter(16):
 void Infrared(Image &image)

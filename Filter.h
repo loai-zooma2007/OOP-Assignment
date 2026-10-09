@@ -12,7 +12,7 @@
 /*8*/void Resize(Image &image,int NewX,int NewY);
 /*9*/void Merge(Image &image);
 /*10*/void DetectEdges(Image &image);
-/*11*/void Crop(Image &image);
+/*11*/void Crop(Image &image,int NewWidth,int NewHeight,int x,int y);
 /*12*/void Blur(Image &image);
 /*13*/void Sunlight(Image &image);
 /*14*/void DenDenMushi(Image &image);
