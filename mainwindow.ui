@@ -436,13 +436,13 @@ QPushButton:hover{background-color: rgb(71, 149, 255);}</string>
          <string>Editor Studio</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="imageLabel">
         <property name="geometry">
          <rect>
           <x>12</x>
-          <y>40</y>
+          <y>50</y>
           <width>981</width>
-          <height>401</height>
+          <height>391</height>
          </rect>
         </property>
         <property name="text">

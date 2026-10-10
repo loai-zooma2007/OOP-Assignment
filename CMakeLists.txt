@@ -28,6 +28,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         stb_image_write.h
         stb_image.h
         Image_Class.h
+        stb_implementation.cpp
+        stb_implementation.cpp
+        stb_implementation.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ImageProcessing_APP_v001 APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
