@@ -10,15 +10,15 @@
 /*6*/void Rotate(Image &image,int angle);
 /*7*/void Darken_Lighten(Image &image,float percent,int type);
 /*8*/void Resize(Image &image,int NewX,int NewY);
-/*9*/void Merge(Image &image);
+/*9*/void Merge(Image &first,Image &second);
 /*10*/void DetectEdges(Image &image);
 /*11*/void Crop(Image &image,int NewWidth,int NewHeight,int x,int y);
-/*12*/void Blur(Image &image);
+/*12*/void Blur(Image &image,int radius);
 /*13*/void Sunlight(Image &image);
 /*14*/void DenDenMushi(Image &image);
 /*15*/void PurpleNight(Image &image);
 /*16*/void Infrared(Image &image);
-/*17*/void Skew(Image &image);
-/*18*/void OilPaint(Image &image);
+/*17*/void Skew(Image &image,float angleDgrs);
+/*18*/void OilPaint(Image &image,int radius);
 
 #endif // FILTER_H

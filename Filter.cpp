@@ -1,5 +1,6 @@
 #include"Filter.h"
 #include<algorithm>
+#include<cmath>
 
 //filter(1):
 void GrayScale(Image &image)
@@ -269,7 +270,22 @@ void Resize(Image &image,int NewX,int NewY)
 }
 
 //filter(9):
-void Merge(Image &image){}
+void Merge(Image &first,Image &second)
+{
+    int width = std::min(first.width,second.width);
+    int height = std::min(first.height,second.height);
+    Image image(width,height);
+    for (int i = 0; i < image.width; i++)
+    {
+        for (int j = 0; j < image.height; j++)
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                image(i,j,k)=(first(i,j,k)+second(i,j,k))/2;
+            }
+        }
+    }
+}
 
 //filter(10):
 void DetectEdges(Image &image)
@@ -341,7 +357,7 @@ void Crop(Image &image,int NewWidth,int NewHeight,int x,int y)
 }
 
 //filter(12):
-void Blur(Image &image)
+void Blur(Image &image,int radius)
 {
     Image blurImage(image.width, image.height);
     for (int i = 0; i < image.width; i++)
@@ -353,9 +369,9 @@ void Blur(Image &image)
                 int avg = 0;
                 int repeat = 0;
 
-                for (int x = -9; x <= 9; x++)
+                for (int x = -radius; x <= radius; x++)
                 {
-                    for (int y = -9; y <= 9; y++)
+                    for (int y = -radius; y <= radius; y++)
                     {
                         int newX = i + x;
                         int newY = j + y;
@@ -366,7 +382,7 @@ void Blur(Image &image)
                         }
                     }
                 }
-
+                if(repeat>0)
                 blurImage(i, j, k) = avg / repeat;
             }
         }
@@ -376,7 +392,22 @@ void Blur(Image &image)
 }
 
 //filter(13):
-void Sunlight(Image &image){}
+void Sunlight(Image &image)
+{
+    for (int i = 0; i < image.width; i++)
+    {
+        for (int j = 0; j < image.height; j++)
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                int _value=0;
+                _value =static_cast<int>(image(i,j,k)*1.5);
+                if(_value>255)_value=255;
+                image(i,j,k)=_value;
+            }
+        }
+    }
+}
 
 //filter(14):
 void DenDenMushi(Image &image)
@@ -433,7 +464,99 @@ void Infrared(Image &image)
 }
 
 //filter(17):
-void Skew(Image &image){}
+void Skew(Image &image,float angleDgrs)
+{
+    float angleRad = angleDgrs*M_PI/180.0f;
+    float tanAngle =tan(angleRad);
+    int shiftMax =(int)std::fabs(image.height*tanAngle);
+    int newWidth = image.width+shiftMax;
+    int newHeight = image.height;
+    int baseShift = (tanAngle<0)?shiftMax:0;
+    Image SkewImage(newWidth,newHeight);
+
+    for (int i = 0; i < image.width; i++)
+    {
+        for (int j = 0; j < image.height; j++)
+        {
+            for (int k = 0; k < image.channels; k++)
+            {
+                SkewImage(i,j,k)=255;
+            }
+        }
+    }
+
+    for (int j = 0; j < image.height; j++)
+    {
+        for (int i = 0; i < image.width; i++)
+        {
+            int shift =(int)(j*tanAngle)+baseShift ;
+            int NewI=i+shift;
+            if(NewI>=0&&NewI<newWidth)
+            {
+                for (int k = 0; k < image.channels; k++)
+                {
+                    SkewImage(NewI,j,k)=image(i,j,k);
+                }
+            }
+        }
+    }
+
+    image=SkewImage;
+}
 
 //filter(18):
-void OilPaint(Image &image){}
+void OilPaint(Image &image,int radius)
+{
+    if(radius<0)return;
+
+    Image newImage(image.width,image.height);
+    int numLevels = 20;
+
+    for (int i = 0; i < image.width; i++)
+    {
+        for (int j = 0; j < image.height; j++)
+        {
+            int levelCount[256] = {0};
+            int sumR[256] = {0}, sumG[256] = {0}, sumB[256] = {0};
+
+            for (int dx = -radius; dx <= radius; dx++) {
+                for (int dy = -radius; dy <= radius; dy++) {
+                    int nx = i + dx;
+                    int ny = j + dy;
+
+                    if (nx >= 0 && nx < image.width && ny >= 0 && ny < image.height) {
+                        int r = image(nx, ny, 0);
+                        int g = image(nx, ny, 1);
+                        int b = image(nx, ny, 2);
+
+                        int intensity = (r + g + b) / 3;
+                        int level = (intensity * numLevels) / 256;
+
+                        if(level>=numLevels)level=numLevels-1;
+
+                        levelCount[level]++;
+                        sumR[level] += r;
+                        sumG[level] += g;
+                        sumB[level] += b;
+                    }
+                }
+            }
+
+            int maxLevel = 0, maxCount = 0;
+            for (int l = 0; l < numLevels; l++) {
+                if (levelCount[l] > maxCount) {
+                    maxCount = levelCount[l];
+                    maxLevel = l;
+                }
+            }
+            if(maxCount>0)
+            {
+                newImage(i, j, 0) = sumR[maxLevel] / maxCount;
+                newImage(i, j, 1) = sumG[maxLevel] / maxCount;
+                newImage(i, j, 2) = sumB[maxLevel] / maxCount;
+            }
+        }
+    }
+
+    image = newImage;
+}
