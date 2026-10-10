@@ -29,6 +29,8 @@ private slots:
 
     void on_Back_2_clicked();
 
+    void on_apply_clicked();
+
 private:
     Ui::MainWindow *ui;
     Image CurrentImage;

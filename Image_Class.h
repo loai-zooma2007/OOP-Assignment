@@ -31,6 +31,7 @@
 #define pixel unsigned int
 
 #include <iostream>
+#include<cstring>
 #include <exception>
 
 
