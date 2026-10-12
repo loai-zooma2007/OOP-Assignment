@@ -21,18 +21,24 @@ public:
 private slots:
     void on_Exit_clicked();
 
-    void on_Start_clicked();
-
-    void on_Back_clicked();
-
     void on_open_clicked();
 
     void on_Back_2_clicked();
 
     void on_apply_clicked();
 
+    void on_reset_clicked();
+
+    void on_Save_clicked();
+
+    void on_Edit_clicked();
+
+
 private:
     Ui::MainWindow *ui;
     Image CurrentImage;
+    Image OriginalImage;
+
+    void updateImageDisplay();
 };
 #endif // MAINWINDOW_H

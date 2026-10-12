@@ -14,7 +14,7 @@
 /*10*/void DetectEdges(Image &image);
 /*11*/void Crop(Image &image,int NewWidth,int NewHeight,int x,int y);
 /*12*/void Blur(Image &image,int radius);
-/*13*/void Sunlight(Image &image);
+/*13*/void Sunlight(Image &image,float intensity);
 /*14*/void DenDenMushi(Image &image);
 /*15*/void PurpleNight(Image &image);
 /*16*/void Infrared(Image &image);

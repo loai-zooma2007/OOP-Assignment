@@ -285,6 +285,7 @@ void Merge(Image &first,Image &second)
             }
         }
     }
+    first = image;
 }
 
 //filter(10):
@@ -339,6 +340,7 @@ void DetectEdges(Image &image)
 //filter(11):
 void Crop(Image &image,int NewWidth,int NewHeight,int x,int y)
 {
+    if( x<0 || y<0 || NewWidth<=0 || NewHeight<=0 || x+NewWidth > image.width || y+NewHeight > image.height )return;
     Image newimage(NewWidth,NewHeight);
 
     for (int i = 0; i < NewWidth; i++)
@@ -392,7 +394,7 @@ void Blur(Image &image,int radius)
 }
 
 //filter(13):
-void Sunlight(Image &image)
+void Sunlight(Image &image,float intensity)
 {
     for (int i = 0; i < image.width; i++)
     {
@@ -400,10 +402,17 @@ void Sunlight(Image &image)
         {
             for (int k = 0; k < 3; k++)
             {
-                int _value=0;
-                _value =static_cast<int>(image(i,j,k)*1.5);
-                if(_value>255)_value=255;
-                image(i,j,k)=_value;
+                int _pixel = image(i,j,k);
+                if(k==0)
+                    _pixel += 30*intensity;
+                else if(k==1)
+                    _pixel += 20*intensity;
+                else
+                    _pixel += 10*intensity;
+                if(_pixel>255)
+                    _pixel=255;
+
+                image(i,j,k)= _pixel;
             }
         }
     }
