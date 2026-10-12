@@ -272,20 +272,22 @@ void Resize(Image &image,int NewX,int NewY)
 //filter(9):
 void Merge(Image &first,Image &second)
 {
-    int width = std::min(first.width,second.width);
-    int height = std::min(first.height,second.height);
-    Image image(width,height);
-    for (int i = 0; i < image.width; i++)
+    int width = first.width;
+    int height = first.height;
+    Image resizeSecond = second;
+    Resize(resizeSecond,width,height);
+    Image mergeImage(width,height);
+    for (int i = 0; i < mergeImage.width; i++)
     {
-        for (int j = 0; j < image.height; j++)
+        for (int j = 0; j < mergeImage.height; j++)
         {
             for (int k = 0; k < 3; k++)
             {
-                image(i,j,k)=(first(i,j,k)+second(i,j,k))/2;
+                mergeImage(i,j,k)=(first(i,j,k)+resizeSecond(i,j,k))/2;
             }
         }
     }
-    first = image;
+    first = mergeImage;
 }
 
 //filter(10):
